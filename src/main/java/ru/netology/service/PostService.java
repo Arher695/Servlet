@@ -14,11 +14,11 @@ public class PostService {
     }
 
     public List<Post> all() {
-        return repository.all();
+        return List.copyOf(repository.all().values());
     }
 
-    public Post getById(long id) {
-        return repository.getById(id).orElseThrow(NotFoundException::new);
+    public Post getById(long id) {return repository.getById(id)
+                .orElseThrow(()-> new NotFoundException("Post with id " + id + " not found"));
     }
 
     public Post save(Post post) {
