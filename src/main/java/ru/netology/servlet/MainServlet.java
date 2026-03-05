@@ -1,6 +1,7 @@
 package ru.netology.servlet;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.netology.config.AppConfig;
 import ru.netology.controller.PostController;
 
 import javax.servlet.ServletException;
@@ -16,12 +17,8 @@ public class MainServlet extends HttpServlet {
     @Override
     //инициализация сервлета: создаём репозиторий, сервис, контроллер
     public void init() throws ServletException {
-        // Создаём Spring контекст через аннотации
-        var context = new AnnotationConfigApplicationContext();
-        // сканируем пакет на @Component, @Service и т.д.
-        context.scan("ru.netology");
-        context.refresh();
-
+        // Используем Java Config
+        var context = new AnnotationConfigApplicationContext(AppConfig.class);
         // Получаем бин контроллера
         this.controller = context.getBean(PostController.class);
     }
