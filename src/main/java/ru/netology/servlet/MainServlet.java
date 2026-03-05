@@ -1,15 +1,12 @@
 package ru.netology.servlet;
 
-import com.google.gson.Gson;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.netology.controller.PostController;
-import ru.netology.repository.PostRepository;
-import ru.netology.service.PostService;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class MainServlet extends HttpServlet {
     //контроллер, который будет управлять запросами и делегировать их сервис
@@ -18,10 +15,15 @@ public class MainServlet extends HttpServlet {
 
     @Override
     //инициализация сервлета: создаём репозиторий, сервис, контроллер
-    public void init() {
-        final var repository = new PostRepository();
-        final var service = new PostService(repository);
-        controller = new PostController(service);
+    public void init() throws ServletException {
+        // Создаём Spring контекст через аннотации
+        var context = new AnnotationConfigApplicationContext();
+        // сканируем пакет на @Component, @Service и т.д.
+        context.scan("ru.netology");
+        context.refresh();
+
+        // Получаем бин контроллера
+        this.controller = context.getBean(PostController.class);
     }
 
     @Override
